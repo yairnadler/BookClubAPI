@@ -1,0 +1,64 @@
+version: '3.9'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+  books:
+    build:
+      context: ./books
+    container_name: books
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/
+    ports:
+      - "5001:5000"
+    restart: always
+
+  loans1:
+    build:
+      context: ./loans
+    container_name: loans1
+    depends_on:
+      - mongo
+      - books
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/
+    ports:
+      - "5002:5000"
+    restart: always
+
+  loans2:
+    build:
+      context: ./loans
+    container_name: loans2
+    depends_on:
+      - mongo
+      - books
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/
+    ports:
+      - "5003:5000"
+    restart: always
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    depends_on:
+      - books
+      - loans1
+      - loans2
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    restart: always
+
+volumes:
+  mongo-data:
