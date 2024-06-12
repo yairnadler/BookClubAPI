@@ -5,6 +5,8 @@ import requests
 from bson.objectid import ObjectId
 import logging
 
+GENRE = ['Fiction', 'Children', 'Biography', 'Science', 'Science Fiction', 'Fantasy', 'Other']
+
 # MongoDB client setup
 try:
     client = MongoClient('mongodb://mongo:27017/')
@@ -30,7 +32,11 @@ def fetch_google_books_details(isbn):
 
 def validate_book_data(data):
     required_fields = ['ISBN', 'title', 'genre']
-    return all(field in data for field in required_fields)
+    if all(field in data for field in required_fields):
+        if data["genre"] not in GENRE:
+            return False, f"Invalid Genre. Genre must be one of: {GENRE}"
+        return True, None
+    return False, "Missing required fields"
 
 def create_book_entry(data):
     authors, publisher, published_date = fetch_google_books_details(data["ISBN"])
@@ -84,7 +90,7 @@ def get_ratings():
     ratings = list(db.ratings.find({}, {'_id': False}))
     for rating in ratings:
         rating['id'] = str(rating['id'])
-        
+
     return ratings
 
 def get_ratings_by_book_id(book_id):

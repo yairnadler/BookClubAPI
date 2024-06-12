@@ -15,8 +15,9 @@ def create_book():
     data = request.json
 
     # Validate the incoming data
-    if not validate_book_data(data):
-        return jsonify({"error": "Invalid data"}), 422
+    valid, error = validate_book_data(data)
+    if not valid:
+        return jsonify({"error": error}), 422
 
     # Check if the book already exists
     if get_books({"ISBN": data["ISBN"]}):
