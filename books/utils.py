@@ -80,6 +80,13 @@ def create_rating_entry(book_id):
     }
     db.ratings.insert_one(rating_data)
 
+def get_ratings():
+    ratings = list(db.ratings.find({}, {'_id': False}))
+    for rating in ratings:
+        rating['id'] = str(rating['id'])
+        
+    return ratings
+
 def get_ratings_by_book_id(book_id):
     ratings = db.ratings.find_one({"id": book_id}, {'_id': False})
     if ratings:

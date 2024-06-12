@@ -70,6 +70,16 @@ def delete_book(bookID):
     except Exception as e:
         app.logger.error(f"Error occurred: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
+    
+@app.route('/ratings', methods=['GET'])
+def get_ratings_route():
+    try:
+        ratings = get_ratings()
+        app.logger.debug(f"Ratings retrieved: {ratings}")
+        return jsonify(ratings), 200
+    except Exception as e:
+        app.logger.error(f"Error occurred: {str(e)}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 @app.route('/books/<bookID>/rating', methods=['POST'])
 def rate_book(bookID):
