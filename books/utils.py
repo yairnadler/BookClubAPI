@@ -76,7 +76,11 @@ def get_book_by_id(book_id):
 def delete_book_by_id(book_id):
     db.books.delete_one({"id": book_id})
     db.ratings.delete_one({"id": book_id})
-    
+
+def update_book_entry(book_id, data):
+    db.books.update_one({"id": book_id}, {"$set": data})
+    return get_book_by_id(book_id)
+
 def create_rating_entry(book_id):
     rating_data = {
         "values": [],

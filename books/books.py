@@ -71,7 +71,29 @@ def delete_book(bookID):
     except Exception as e:
         app.logger.error(f"Error occurred: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
-    
+
+@app.route('/books/<bookID>', methods=['PUT'])
+def update_book(bookID):
+    data = request.json
+
+    # Validate the incoming data
+    valid, error = validate_book_data(data)
+    if not valid:
+        return jsonify({"error": error}), 422
+
+    try:
+        # Update the book entry
+        book = update_book_entry(bookID, data)
+        app.logger.debug(f"Book updated: {book}")
+
+        if book:
+            return jsonify(book), 200
+        else:
+            return jsonify({"error": "Book not found"}), 404
+    except Exception as e:
+        app.logger.error(f"Error occurred: {str(e)}")
+        return jsonify({"error": "Internal Server Error"}), 500
+
 @app.route('/ratings', methods=['GET'])
 def get_ratings_route():
     try:
@@ -82,7 +104,7 @@ def get_ratings_route():
         app.logger.error(f"Error occurred: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
 
-@app.route('/books/<bookID>/rating', methods=['POST'])
+@app.route('/ratings/<bookID>/values', methods=['POST'])
 def rate_book(bookID):
     data = request.json
     rating = data.get("value")
@@ -100,7 +122,7 @@ def rate_book(bookID):
         app.logger.error(f"Error occurred: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
 
-@app.route('/books/<bookID>/rating', methods=['GET'])
+@app.route('/ratings/<bookID>', methods=['GET'])
 def get_book_ratings(bookID):
     try:
         ratings = get_ratings_by_book_id(bookID)
