@@ -30,6 +30,11 @@ def get_book_data(isbn):
     raise Exception("Book not found")
 
 def create_loan_entry(data, book_data):
+    # Check if the book is already loaned
+    active_loan = db.loans.find_one({"ISBN": data["ISBN"], "returnDate": None})
+    if active_loan:
+        return False, "Book is already loaned"
+    
     book_id = book_data["id"]
     book_title = book_data["title"]
     
