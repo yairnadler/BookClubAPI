@@ -1,5 +1,6 @@
 # utils.py
 from pymongo import MongoClient
+import requests
 from bson.objectid import ObjectId
 from datetime import datetime
 import logging
@@ -16,12 +17,17 @@ def validate_loan_data(data):
     required_fields = ['memberName', 'ISBN', 'loanDate']
     return all(field in data for field in required_fields)
 
-def create_loan_entry(data):
-    book = db.books.find_one({"ISBN": data["ISBN"]})
-    if not book:
-        return False, "Book not found"
+def get_book_data(isbn):
+    response = requests.get(f'http://books:5000/books?ISBN={isbn}')
+    if response.status_code == 200:
+        books = response.json()
+        if books:
+            return books[0]
+    raise Exception("Book not found")
 
-    book_id = str(book["id"])
+def create_loan_entry(data, book_data):
+    book_id = book_data["id"]
+    book_title = book_data["title"]
 
     # Check if the member has already loaned 2 books
     active_loans = db.loans.count_documents({"memberName": data["memberName"], "returnDate": None})
@@ -31,6 +37,7 @@ def create_loan_entry(data):
     loan_data = {
         "memberName": data["memberName"],
         "ISBN": data["ISBN"],
+        "title": book_title,
         "loanDate": data["loanDate"],
         "returnDate": None,
         "loanID": str(ObjectId()),
@@ -39,7 +46,7 @@ def create_loan_entry(data):
 
     db_loan_data = loan_data.copy()
     db.loans.insert_one(db_loan_data)
-
+    
     return True, loan_data
 
 def get_loans(query_filter):

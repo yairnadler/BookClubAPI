@@ -18,7 +18,9 @@ def create_loan():
 
     try:
         # Create the loan entry
-        loan_data = create_loan_entry(data)
+        book_data = get_book_data(data["ISBN"])
+        app.logger.debug(f"Book data retrieved: {book_data}")
+        loan_data = create_loan_entry(data, book_data)
         if loan_data[0]:
             return jsonify(loan_data[1]), 201
         else:
