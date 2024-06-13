@@ -10,6 +10,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/loans', methods=['POST'])
 def create_loan():
+    # Check if the request is JSON
+    if request.content_type != 'application/json':
+        return jsonify('error: Content-Type should be application/json'), 415
+    
     data = request.json
 
     # Validate the incoming data

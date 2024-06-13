@@ -12,6 +12,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 @app.route('/books', methods=['POST'])
 def create_book():
+    # Check if the request is JSON
+    if request.content_type != 'application/json':
+        return jsonify('error: Content-Type should be application/json'), 415
+    
     data = request.json
 
     # Validate the incoming data
@@ -74,6 +78,10 @@ def delete_book(bookID):
 
 @app.route('/books/<bookID>', methods=['PUT'])
 def update_book(bookID):
+    # Check if the request is JSON
+    if request.content_type != 'application/json':
+        return jsonify('error: Content-Type should be application/json'), 415
+    
     data = request.json
 
     # Validate the incoming data
@@ -106,6 +114,10 @@ def get_ratings_route():
 
 @app.route('/ratings/<bookID>/values', methods=['POST'])
 def rate_book(bookID):
+    # Check if the request is JSON
+    if request.content_type != 'application/json':
+        return jsonify('error: Content-Type should be application/json'), 415
+    
     data = request.json
     rating = data.get("value")
     
