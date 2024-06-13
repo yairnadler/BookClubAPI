@@ -77,7 +77,7 @@ def update_book(bookID):
     data = request.json
 
     # Validate the incoming data
-    valid, error = validate_book_data(data)
+    valid, error = validate_book_put_request_data(data)
     if not valid:
         return jsonify({"error": error}), 422
 
@@ -87,7 +87,7 @@ def update_book(bookID):
         app.logger.debug(f"Book updated: {book}")
 
         if book:
-            return jsonify(book), 200
+            return jsonify(book['id']), 200
         else:
             return jsonify({"error": "Book not found"}), 404
     except Exception as e:

@@ -38,6 +38,15 @@ def validate_book_data(data):
         return True, None
     return False, "Missing required fields"
 
+def validate_book_put_request_data(data):
+    required_fields = ['ISBN', 'authors', 'genre', 'id', 'publishedDate', 'publisher', 'title']
+    if all(field in data for field in required_fields):
+        if data["genre"] not in GENRE:
+            return False, f"Invalid Genre. Genre must be one of: {GENRE}"
+        return True, None
+    
+    return False, "Missing required fields"
+
 def create_book_entry(data):
     authors, publisher, published_date = fetch_google_books_details(data["ISBN"])
 
