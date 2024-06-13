@@ -22,7 +22,7 @@ def create_loan():
         app.logger.debug(f"Book data retrieved: {book_data}")
         loan_data = create_loan_entry(data, book_data)
         if loan_data[0]:
-            return jsonify(loan_data[1]), 201
+            return jsonify(f"loan ID: {loan_data[1]["loanID"]}"), 201
         else:
             return jsonify({"error": loan_data[1]}), 400
     except Exception as e:
@@ -58,7 +58,7 @@ def delete_loan(loanID):
     try:
         result = delete_loan_by_id(loanID)
         if result.deleted_count > 0:
-            return jsonify({"loanID": loanID}), 200
+            return jsonify({"loan ID": loanID}), 200
         else:
             return jsonify({"error": "Loan not found"}), 404
     except Exception as e:
@@ -70,7 +70,7 @@ def return_loan(loanID):
     try:
         loan = update_loan_return_date(loanID)
         if loan:
-            return jsonify(loan), 200
+            return jsonify(loan), 201
         else:
             return jsonify({"error": "Loan not found"}), 404
     except Exception as e:

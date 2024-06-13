@@ -61,6 +61,7 @@ def get_loan_by_id(loan_id):
     if loan:
         loan['loanID'] = str(loan['loanID'])
         loan['bookID'] = str(loan['bookID'])
+    
     return loan
 
 def delete_loan_by_id(loan_id):

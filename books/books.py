@@ -31,7 +31,7 @@ def create_book():
         # Create the corresponding rating entry
         create_rating_entry(book_data["id"])
     
-        return jsonify(book_data), 201
+        return jsonify(f"book ID: {book_data["id"]}"), 201
     except Exception as e:
         app.logger.error(f"Error occurred: {str(e)}")
         return jsonify({"error": "Internal Server Error"}), 500
@@ -84,10 +84,10 @@ def update_book(bookID):
     try:
         # Update the book entry
         book = update_book_entry(bookID, data)
-        app.logger.debug(f"Book updated: {book}")
+        app.logger.debug(f"Book updated: {bookID}")
 
         if book:
-            return jsonify(book['id']), 200
+            return jsonify(f"book ID: {book['id']}"), 200
         else:
             return jsonify({"error": "Book not found"}), 404
     except Exception as e:
