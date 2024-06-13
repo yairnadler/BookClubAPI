@@ -23,7 +23,9 @@ def create_loan():
         loan_data = create_loan_entry(data, book_data)
         
         if loan_data[0]:
-            return jsonify(f"loan ID: {loan_data[1]["loanID"]}"), 201
+            loanID = loan_data[1]["loanID"]
+            
+            return jsonify({"loan ID": loanID}), 201
         else:
             return jsonify({"error": loan_data[1]}), 400
         
@@ -74,7 +76,7 @@ def return_loan(loanID):
         loan = update_loan_return_date(loanID)
         
         if loan:
-            return jsonify(loan), 201
+            return jsonify({"loan ID": loanID}), 201
         else:
             return jsonify({"error": "Loan not found"}), 404
         

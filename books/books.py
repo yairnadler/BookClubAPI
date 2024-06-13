@@ -27,8 +27,9 @@ def create_book():
     try:
         book_data = create_book_entry(data)
         create_rating_entry(book_data["id"])
+        bookID = book_data["id"]
          
-        return jsonify(f"book ID: {book_data["id"]}"), 201
+        return jsonify({"book ID": bookID}), 201
     except Exception as e:
         return jsonify({"error": "Internal Server Error"}), 500
 
@@ -80,9 +81,10 @@ def update_book(bookID):
 
     try:
         book = update_book_entry(bookID, data)
+        bookID = book["id"]
 
         if book:
-            return jsonify(f"book ID: {book['id']}"), 200
+            return jsonify({"book ID": bookID}), 200
         else:
             return jsonify({"error": "Book not found"}), 404
         
